@@ -29,5 +29,7 @@ may be appropriate.
 .. image:: https://travis-ci.org/cwpearson/pycprof.svg?branch=master
     :target: https://travis-ci.org/cwpearson/pycprof
 
+.. code:: bash
+
     pip install --user tox
 
