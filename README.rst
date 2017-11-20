@@ -26,4 +26,8 @@ may be appropriate.
 
 ----
 
+.. image:: https://travis-ci.org/cwpearson/pycprof.svg?branch=master
+    :target: https://travis-ci.org/cwpearson/pycprof
+
     pip install --user tox
+
