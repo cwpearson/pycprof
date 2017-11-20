@@ -29,7 +29,20 @@ may be appropriate.
 .. image:: https://travis-ci.org/cwpearson/pycprof.svg?branch=master
     :target: https://travis-ci.org/cwpearson/pycprof
 
+----
+
+To run tests:
+
 .. code:: bash
 
     pip install --user tox
+    tox
+
+----
+
+To install
+
+.. code:: bash
+
+    pip install --user -e . 
 
