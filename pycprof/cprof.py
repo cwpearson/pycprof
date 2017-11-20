@@ -59,11 +59,16 @@ def run(path=None):
 
 class AddressSpace(object):
     def __init__(self, o):
-        self.type = str(j["type"])
+        self.type = str(o["type"])
 
+class Location(object):
+    def __init__(self, j):
+        self.type = str(j["type"])
+        self.id_ = int(j["id"])
 
 class Value(object):
     def __init__(self, j):
+        print j
         self.id_ = int(j["id"])
         self.size = int(j["size"])
         self.pos = int(j["pos"])
@@ -76,9 +81,9 @@ class Allocation(object):
         self.id_ = int(j["id"])
         self.pos = int(j["pos"])
         self.size = int(j["size"])
-        self.type = j["type"]
         self.address_space = AddressSpace(json.loads(j["addrsp"]))
-        self.mem = Memory(json.loads(j["mem"]))
+        self.mem = str(j["mem"])
+        self.loc = Location(json.loads(j["loc"]))
 
 
 class API(object):
@@ -98,9 +103,3 @@ class API(object):
             self.outputs = []
         else:
             self.outputs = [int(x) for x in outputs]
-
-
-class Memory(object):
-    def __init__(self, j):
-        self.location = j["loc"]
-        self.id_ = j["id"]
