@@ -68,11 +68,10 @@ class Location(object):
 
 class Value(object):
     def __init__(self, j):
-        print j
         self.id_ = int(j["id"])
         self.size = int(j["size"])
         self.pos = int(j["pos"])
-        self.allocation_id = int(j["allocation_id"])
+        self.allocation_id = int(j["allocation_"])
         self.initialized = j["initialized"]
 
 
