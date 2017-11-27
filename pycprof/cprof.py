@@ -34,7 +34,11 @@ def run_handlers(handler_list, path=None):
         # print_progress(0, l, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
         for i, line in enumerate(input_file):
             # print_progress(i, l, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
-            j = json.loads(line)
+            try:
+                j = json.loads(line)
+            except ValueError as e:
+                print "problem at line", i, line
+                raise e
             if "val" in j:
                 obj = Value(j["val"])
             elif "allocation" in j:
