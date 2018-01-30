@@ -99,7 +99,7 @@ class API(object):
         self.id_ = int(j["id"])
         self.functionName = j["name"]
         self.symbol = j["symbolname"]
-        self.device = j["device"]
+        self.device = int(j["device"])
 
         inputs = j["inputs"]
         outputs = j["outputs"]
@@ -111,6 +111,9 @@ class API(object):
             self.outputs = []
         else:
             self.outputs = [int(x) for x in outputs]
+
+        if "dstCount" in j:
+            self.dstCount = int(j["dstCount"])
 
 class Dependence(object):
     def __init__(self, j):
