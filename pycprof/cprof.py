@@ -19,6 +19,42 @@ def set_handlers(l):
     _handlers = l
 
 
+def run_pass(handler_dict, path=None):
+    if not path:
+        path = DEFAULT_INPUT
+
+    with open(path, 'r') as input_file:
+        i = 0
+        for i, l in enumerate(input_file):
+            pass
+        l = i + 1
+
+    with open(path, 'r') as input_file:
+
+        print_progress(0, l, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
+        for i, line in enumerate(input_file):
+            if i % 200 == 0:
+                print_progress(i, l, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
+            try:
+                j = json.loads(line)
+            except ValueError as e:
+                print "problem at line", i, line
+                raise e
+            if "val" in j:
+                obj = Value(j["val"])
+            elif "allocation" in j:
+                obj = Allocation(j["allocation"])
+            elif "api" in j:
+                obj = API(j["api"])
+            elif "dep" in j:
+                obj = Dependence(j["dep"])
+            else:
+                continue
+
+            if type(obj) in handler_dict:
+                handler_dict[type(obj)](obj)
+        print ""
+
 def run_handlers(handler_list, path=None):
     """ Run a list of handlers on a cprof file """
     if not path:
@@ -75,6 +111,17 @@ class Location(object):
         self.type = str(j["type"])
         self.id_ = int(j["id"])
 
+    def __str__(self):
+        return "Location{type:" + self.type + ", id_:"+str(self.id_)+"}"
+
+    def __eq__(self, other):
+        if isinstance(other, Location):
+            return (self.type == other.type) and (self.id_ == other.id_)
+        return False
+
+    def __ne__(self, other):
+        return not self == other
+
 class Value(object):
     def __init__(self, j):
         self.id_ = int(j["id"])
@@ -120,3 +167,4 @@ class Dependence(object):
         self.tid = int(j["tid"])
         self.dst = int(j["dst_id"])
         self.src = int(j["src_id"])
+        self.api_cause = int(j["api_cause"])
