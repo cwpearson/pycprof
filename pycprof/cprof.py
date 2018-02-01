@@ -114,6 +114,6 @@ class API(object):
 
 class Dependence(object):
     def __init__(self, j):
-        self.tid_ = int(j["tid"])
-        self.dst_ = int(j["dst_id"])
-        self.src_ = int(j["src_id"])
+        self.tid = int(j["tid"])
+        self.dst = int(j["dst_id"])
+        self.src = int(j["src_id"])
