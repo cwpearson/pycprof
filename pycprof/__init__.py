@@ -1,3 +1,3 @@
-from cprof import *
+from __future__ import absolute_import
 
-from graph import *
+__all__ = ["dom", "profile", "reader"]
