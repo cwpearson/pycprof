@@ -27,7 +27,7 @@ class Value(object):
         self.id_ = int(j["id"])
         self.size = int(j["size"])
         self.pos = int(j["pos"])
-        self.allocation_id = int(j["allocation"])
+        self.allocation = int(j["allocation"])
         self.initialized = j["initialized"]
 
 
@@ -40,6 +40,14 @@ class Allocation(object):
         self.mem = str(j["mem"])
         self.loc = Location(json.loads(j["loc"]))
 
+
+class PinnedAllocation(Allocation):
+    def __init__(self, j):
+        Allocation.__init__(self, j)
+
+class PageableAllocation(Allocation):
+    def __init__(self, j):
+        Allocation.__init__(self, j)
 
 class API(object):
     def __init__(self, j):
@@ -68,3 +76,9 @@ class Dependence(object):
         self.dst = int(j["dst_id"])
         self.src = int(j["src_id"])
         self.api_cause = int(j["api_cause"])
+
+def make_allocation(j):
+    return {
+        "pagelocked": PinnedAllocation(j),
+        "pinned": PageableAllocation(j)
+    }.get(j["mem"], Allocation(j))

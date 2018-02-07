@@ -1,8 +1,8 @@
 from __future__ import absolute_import, print_function
 
-import json
+import ujson as json
 
-from pycprof.dom import Allocation, API, Dependence, Value
+from pycprof.dom import make_allocation, API, Dependence, Value
 
 class Reader:
     def __init__(self, path):
@@ -22,7 +22,7 @@ class Reader:
         if "val" in j:
             obj = Value(j["val"])
         elif "allocation" in j:
-            obj = Allocation(j["allocation"])
+            obj = make_allocation(j["allocation"])
         elif "api" in j:
             obj = API(j["api"])
         elif "dep" in j:
