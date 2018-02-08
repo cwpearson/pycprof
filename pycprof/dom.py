@@ -23,11 +23,11 @@ class Location(object):
         return not self == other
 
 class Value(object):
-    def __init__(self, j):
+    def __init__(self, j, allocation):
         self.id_ = int(j["id"])
         self.size = int(j["size"])
         self.pos = int(j["pos"])
-        self.allocation = int(j["allocation"])
+        self.allocation = allocation
         self.initialized = j["initialized"]
 
 
@@ -50,25 +50,14 @@ class PageableAllocation(Allocation):
         Allocation.__init__(self, j)
 
 class API(object):
-    def __init__(self, j):
+    def __init__(self, j, inputs, outputs):
         self.id_ = int(j["id"])
         self.functionName = j["name"]
         self.symbol = j["symbolname"]
         self.device = int(j["device"])
 
-        inputs = j["inputs"]
-        outputs = j["outputs"]
-        if inputs == "":
-            self.inputs = []
-        else:
-            self.inputs = [int(x) for x in inputs]
-        if outputs == "":
-            self.outputs = []
-        else:
-            self.outputs = [int(x) for x in outputs]
-
-        if "dstCount" in j:
-            self.dstCount = int(j["dstCount"])
+        self.inputs = inputs
+        self.outputs = outputs
 
 class Dependence(object):
     def __init__(self, j):
