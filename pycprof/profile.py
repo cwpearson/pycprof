@@ -1,5 +1,7 @@
 from __future__ import absolute_import, print_function
 
+import logging
+
 import networkx as nx
 import ujson as json
 
@@ -7,19 +9,41 @@ from pycprof.dom import make_allocation, API, Dependence, Value
 
 
 class Profile:
-    def __init__(self, path):
+    def __init__(self, path, num_lines=0):
         self.values = {}
         self.apis = {}
         self.allocations = {}
         self.graph = nx.DiGraph()
 
+        with open(path, 'r') as input_file:
+            self.init_from_lines(input_file, num_lines)
+
+    def init_from_lines(self, lines, num_lines):
+
+        def graph_handle_value(obj):
+            assert isinstance(obj, Value)
+            self.graph.add_node(obj)
+
+        def graph_handle_api(api):
+            assert isinstance(api, API)
+            if "cudaMemcpy" in api.functionName or "Bcast" in api.functionName or "AllReduce" in api.functionName:
+                for srcVal in api.inputs:
+                    for dstVal in api.outputs:
+                        assert isinstance(srcVal, Value)
+                        assert isinstance(dstVal, Value)
+                        self.graph.add_edge(dstVal, srcVal)
+            else:
+                for inVal in api.inputs:  # input transfers
+                    self.graph.add_edge(api, inVal)
+                for outVal in api.outputs:  # output transfers
+                    self.graph.add_edge(outVal, api)
+
+
         values_json = []
         apis_json = []
         allocations_json = []
-
-
-        with open(path, 'r') as input_file:
-            for i, line in enumerate(input_file):
+        for i, line in enumerate(lines):
+            if num_lines == 0 or i < num_lines:
                 try:
                     lineJson = json.loads(line)
                 except ValueError as e:
@@ -42,7 +66,7 @@ class Profile:
         del allocations_json
 
         for j in values_json:
-            alloc = self.allocations[j["id"]]
+            alloc = self.allocations[int(j["allocation"])]
             val = Value(j, alloc)
             self.values[val.id_] = val
             graph_handle_value(val)
@@ -57,20 +81,4 @@ class Profile:
         del apis_json
 
 
-        def graph_handle_value(obj):
-            assert isinstance(obj, Value)
-            self.graph.add_node(obj)
 
-        def graph_handle_api(api):
-            assert isinstance(api, API)
-            if "cudaMemcpy" in api.functionName or "Bcast" in api.functionName or "AllReduce" in api.functionName:
-                for srcVal in api.inputs:
-                    for dstVal in api.outputs:
-                        assert isinstance(srcVal, Value)
-                        assert isinstance(dstVal, Value)
-                        self.graph.add_edge(dstVal, srcVal)
-            else:
-                for inVal in api.inputs:  # input transfers
-                    self.graph.add_edge(api, inVal)
-                for outVal in api.outputs:  # output transfers
-                    self.graph.add_edge(outVal, api)
