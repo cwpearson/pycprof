@@ -1,4 +1,5 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import
+from __future__ import print_function
 
 import json
 
@@ -24,7 +25,7 @@ class Location(object):
 
 class Value(object):
     def __init__(self, j, allocation):
-        self.id_ = int(j["id"])
+        self.id = int(j["id"])
         self.size = int(j["size"])
         self.pos = int(j["pos"])
         self.allocation = allocation
@@ -51,13 +52,20 @@ class PageableAllocation(Allocation):
 
 class API(object):
     def __init__(self, j, inputs, outputs):
-        self.id_ = int(j["id"])
+        self.id = int(j["id"])
         self.functionName = j["name"]
         self.symbol = j["symbolname"]
         self.device = int(j["device"])
-
         self.inputs = inputs
         self.outputs = outputs
+        self.api_start = int(j["start"])
+        self.api_end = int(j["end"])
+
+class CudaLaunch(API):
+    def __init__(self, j, correlation_json, inputs, outputs):
+        API.__init__(self, j, inputs, outputs)
+        self.kernel_start = int(correlation_json["start"])
+        self.kernel_end = int(correlation_json["end"])
 
 class Dependence(object):
     def __init__(self, j):
