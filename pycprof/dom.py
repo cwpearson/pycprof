@@ -58,8 +58,8 @@ class API(object):
         self.device = int(j["device"])
         self.inputs = inputs
         self.outputs = outputs
-        self.api_start = int(j["start"])
-        self.api_end = int(j["end"])
+        self.wall_start = int(j["wall_start"])
+        self.wall_end = int(j["wall_end"])
 
 class CudaLaunch(API):
     def __init__(self, j, correlation_json, inputs, outputs):

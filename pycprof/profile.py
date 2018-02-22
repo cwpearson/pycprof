@@ -71,7 +71,6 @@ class Profile:
                 else:
                     print(lineJson)
                     raise TypeError
-        print("file done")
 
         correlation = {}
         for j in correlation_json:
@@ -79,13 +78,11 @@ class Profile:
                 correlation_id = int(j["correlation_id"])
                 correlation[correlation_id] = j
         del correlation_json
-        print("correlation done")
 
         for j in allocations_json:
             obj = make_allocation(j)
             self.allocations[obj.id_] = obj
         del allocations_json
-        print("allocation done")
 
         for j in values_json:
             alloc = self.allocations[int(j["allocation"])]
@@ -93,7 +90,6 @@ class Profile:
             self.values[val.id] = val
             graph_handle_value(val)
         del values_json
-        print("value done")
 
         for j in apis_json:
             inVals = [self.values[int(i)] for i in j["inputs"]]
@@ -108,7 +104,6 @@ class Profile:
             self.apis[api.id] = api
             graph_handle_api(api)
         del apis_json
-        print("apis done")
 
 
 
