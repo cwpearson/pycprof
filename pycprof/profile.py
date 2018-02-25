@@ -22,7 +22,14 @@ class Profile:
 
         def graph_handle_value(obj):
             assert isinstance(obj, Value)
-            self.graph.add_node(obj)
+
+            if val.id in self.values:
+                oldVal = self.values[val.id]
+                self.values[val.id] = val
+                nx.relabel_nodes(self.graph, {oldVal: val}, copy=False)
+            else:
+                self.values[val.id] = val
+                self.graph.add_node(obj)
 
         def graph_handle_api(api):
             assert isinstance(api, API)
@@ -87,7 +94,6 @@ class Profile:
         for j in values_json:
             alloc = self.allocations[int(j["allocation"])]
             val = Value(j, alloc)
-            self.values[val.id] = val
             graph_handle_value(val)
         del values_json
 
@@ -104,8 +110,4 @@ class Profile:
             self.apis[api.id] = api
             graph_handle_api(api)
         del apis_json
-
-
-
-
 
