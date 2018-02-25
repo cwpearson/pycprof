@@ -29,7 +29,7 @@ class Value(object):
         self.size = int(j["size"])
         self.pos = int(j["pos"])
         self.allocation = allocation
-        self.initialized = j["initialized"]
+        self.initialized = bool(j["initialized"])
 
 
 class Allocation(object):
